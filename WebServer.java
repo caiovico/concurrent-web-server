@@ -11,16 +11,15 @@ final class HttpRequest implements Runnable{
 		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		Writer out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
+
 		in.lines().forEach(System.out::println);
 	}
 	public void run(){
 		try{
 			processRequest();
-			//client.close();
-			//System.out.println("Test 2\n");
 		}
 		catch(Exception e){
-			//System.out.println("Exception thrown.");
+			e.printStackTrace();
 		}
 	}
 }
@@ -33,11 +32,9 @@ public class WebServer{
 		}
 		ServerSocket server =  new ServerSocket(port);
 		ExecutorService threads = Executors.newCachedThreadPool();
-		int counter = 0;
 		while(true){
 			Socket client = server.accept();
 			threads.submit(new HttpRequest(client));
-			//System.out.format("Counter -> %d \n ",++counter);
 		}
 	}
 }	
