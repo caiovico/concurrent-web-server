@@ -13,7 +13,7 @@ public class WebClient{
 			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			)
 		{
-			out.write("GET ./index.htm HTTP/1.1\r\n");
+			out.write("GET /index.htm HTTP/1.1\r\n");
 			System.out.println("send the GET");
 			out.write("Host: localhost\r\n");
 			out.write("Connection: close\r\n");
