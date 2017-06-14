@@ -1,11 +1,16 @@
-import java.io.* ;
-import java.nio.file.*;
-import java.net.* ;
-import java.util.* ;
-import java.util.stream.*;
-import java.util.concurrent.*;
 final class HttpRequest implements Runnable{
 	private Socket client;
+	private  void sendBytes(FileInputStream fis, OutputStream os) throws Exception{
+		 // Construct a 1K buffer to hold bytes on their way to the socket.
+		 byte[] buffer = new byte[1024];
+		 int bytes = 0;
+		 // Copy requested file into the socket's output stream.
+		 while((bytes = fis.read(buffer)) != -1 ) {
+		 	System.out.println("Trying to send file to client...");
+		 	os.write(buffer, 0, bytes);
+ 		}
+	}
+
 	public HttpRequest(Socket s){
 		client = s;
 	}
@@ -26,6 +31,8 @@ final class HttpRequest implements Runnable{
 		while ((line = in.readLine()) != null){
 			System.out.println(line);
 		}
+		System.out.println("\nTest A.\n");
+		out.writeBytes("400 Bad Request\r\n\r\n");
 		FileInputStream fis = null;
 		boolean fileExists = true;
 		try{
@@ -34,26 +41,25 @@ final class HttpRequest implements Runnable{
 			fileExists = false;
 			System.out.println("File Not Found.");
 		}
-		String stateLine = null;
 		if (fileExists){
+			String stateLine = null;
 			String headLine = "Content-type: text/html \r\n";
-			System.out.println("\nTest B.\n");
-			stateLine = "200 OK \r\n";
-			out.writeBytes(stateLine);
-			out.writeBytes(headLine);
-			String testToSend = "<html><body><h1>TEST OK!</h1></body></html>";
-			try{
-				sendBytes(fis,out);
-			}catch(Exception e){
-				e.printStackTrace();
-			}	
+			if (true){
+				System.out.println("\nTest B.\n");
+				stateLine = "200 OK \r\n";
+				out.writeBytes(stateLine);
+				out.writeBytes(headLine);
+				String testToSend = "<html><body><h1>TEST OK!</h1></body></html>";
+				try{
+					sendBytes(fis,out);
+				}catch(Exception e){
+					e.printStackTrace();
+				}	
 		}
 		else{
-			stateLine = "400 Bad Request\r\n";
-			out.writeBytes(stateLine);
 
+			}
 		}
-
 	}
 	public void run(){
 		try{
@@ -79,4 +85,3 @@ public class WebServer{
 		}
 	}
 }	
-
