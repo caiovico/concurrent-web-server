@@ -42,18 +42,12 @@ final class HttpRequest implements Runnable{
 			out.writeBytes(stateLine);
 			out.writeBytes(headLine);
 			String testToSend = "<html><body><h1>TEST OK!</h1></body></html>";
-			try{
-				sendBytes(fis,out);
-			}catch(Exception e){
-				e.printStackTrace();
-			}	
+			out.writeBytes(testToSend);
 		}
 		else{
-			stateLine = "400 Bad Request\r\n";
+			stateLine = "400 Bad Request\r\n\r\n";
 			out.writeBytes(stateLine);
-
 		}
-
 	}
 	public void run(){
 		try{
