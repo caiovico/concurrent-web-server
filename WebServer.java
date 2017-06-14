@@ -1,6 +1,7 @@
 import java.io.* ;
 import java.net.* ;
 import java.util.* ;
+import java.util.stream.*;
 import java.util.concurrent.*;
 final class HttpRequest implements Runnable{
 	private Socket client;
@@ -10,9 +11,23 @@ final class HttpRequest implements Runnable{
 	public void processRequest() throws Exception{
 		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		Writer out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+		Scanner scn = new Scanner(in);
+		String line = scn.nextLine();
+		String filename = "./index.htm";
+		String[] request = line.split(" ");
+		if (!request[1] .equals("/") ){
+			filename = "."+request[1];
+		}
+		System.out.format("File requested - > %s\n\n", filename);
+		while (scn.hasNextLine()){
+			System.out.println(scn.nextLine());
+		}
+		FileInputStream fis = null;
+		try{
+			fis = new FileInputStream(filename);
+		}catch (FileNotFoundException e){
 
-
-		in.lines().forEach(System.out::println);
+		}
 	}
 	public void run(){
 		try{
