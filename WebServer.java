@@ -1,4 +1,5 @@
 import java.io.* ;
+import java.nio.file.*;
 import java.net.* ;
 import java.util.* ;
 import java.util.stream.*;
@@ -10,7 +11,7 @@ final class HttpRequest implements Runnable{
 	}
 	public void processRequest() throws Exception{
 		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-		Writer out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+		DataOutputStream out = new DataOutputStream(new BufferedOutputStream(client.getOutputStream()));
 		Scanner scn = new Scanner(in);
 		String line = scn.nextLine();
 		String filename = "./index.htm";
@@ -22,12 +23,27 @@ final class HttpRequest implements Runnable{
 		while (scn.hasNextLine()){
 			System.out.println(scn.nextLine());
 		}
-		FileInputStream fis = null;
-		try{
-			fis = new FileInputStream(filename);
-		}catch (FileNotFoundException e){
+		Path path = null;
+		boolean fileExists = true;
+		path = Paths.get(filename);
+		if (!Files.exists(path))
+			fileExists = false;
+		String stateLine = null;
+		String headLine = "Content-type: text/html \r\n";
+		if (fileExists){
+			stateLine = "200 OK \r\n";
+			out.writeBytes(stateLine);
+			out.writeBytes(headLine);
+			BufferedReader br = Files.newBufferedReader(path);
+			line = null;
+			while ((line = br.readLine())!=null){
+				out.writeBytes(line);
+			}			
+		}
+		else{
 
 		}
+
 	}
 	public void run(){
 		try{
